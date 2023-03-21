@@ -5,8 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import dev.haqim.productdummy.domain.usecase.ProductInteractor
-import dev.haqim.productdummy.domain.usecase.ProductUseCase
+import dev.haqim.productdummy.core.domain.usecase.ProductInteractor
+import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
 
 
 @Module

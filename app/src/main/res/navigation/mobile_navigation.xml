@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/productListFragment"
-        android:name="dev.haqim.productdummy.ui.list.ProductListFragment"
+        android:name="dev.haqim.productdummy.feature.list.ProductListFragment"
         android:label="fragment_product_list"
         tools:layout="@layout/fragment_product_list"
         >
@@ -26,18 +26,18 @@
     
     <fragment
         android:id="@+id/detailProductFragment"
-        android:name="dev.haqim.productdummy.ui.detail.DetailProductFragment"
+        android:name="dev.haqim.productdummy.feature.detail.DetailProductFragment"
         android:label="fragment_detail_product"
         tools:layout="@layout/fragment_detail_product" >
         <argument
             android:name="product"
-            app:argType="dev.haqim.productdummy.domain.model.Product" />
+            app:argType="dev.haqim.productdummy.core.domain.model.Product" />
 
     </fragment>
     
     <fragment
         android:id="@+id/favoriteProductFragment"
-        android:name="dev.haqim.productdummy.ui.favorites.FavoritesFragment"
+        android:name="dev.haqim.productdummy.feature.favorites.FavoritesFragment"
         android:label="fragment_favorite_product"
         tools:layout="@layout/fragment_product_list" >
         <action

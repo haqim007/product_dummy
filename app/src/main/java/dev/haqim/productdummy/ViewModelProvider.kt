@@ -2,10 +2,10 @@ package dev.haqim.productdummy
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import dev.haqim.productdummy.domain.usecase.ProductUseCase
-import dev.haqim.productdummy.ui.detail.DetailProductViewModel
-import dev.haqim.productdummy.ui.favorites.FavoritesViewModel
-import dev.haqim.productdummy.ui.list.ProductListViewModel
+import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
+import dev.haqim.productdummy.feature.detail.DetailProductViewModel
+import dev.haqim.productdummy.feature.favorites.FavoritesViewModel
+import dev.haqim.productdummy.feature.list.ProductListViewModel
 
 //class ViewModelProvider(
 //    private val useCase: ProductUseCase
