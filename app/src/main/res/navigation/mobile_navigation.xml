@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/productListFragment">
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="dev.haqim.productdummy.ui.list.ProductListFragment"
+        android:label="fragment_product_list"
+        tools:layout="@layout/fragment_product_list"
+        >
+        <action
+            android:id="@+id/action_productListFragment_to_detailProductFragment"
+            app:destination="@id/detailProductFragment"
+            app:popUpTo="@id/detailProductFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_productListFragment_to_favoriteProductFragment"
+            app:destination="@id/favoriteProductFragment"
+            app:popUpTo="@id/favoriteProductFragment"
+            app:popUpToInclusive="true"/>
+        
+    </fragment>
+    
+    <fragment
+        android:id="@+id/detailProductFragment"
+        android:name="dev.haqim.productdummy.ui.detail.DetailProductFragment"
+        android:label="fragment_detail_product"
+        tools:layout="@layout/fragment_detail_product" >
+        <argument
+            android:name="product"
+            app:argType="dev.haqim.productdummy.domain.model.Product" />
+
+    </fragment>
+    
+    <fragment
+        android:id="@+id/favoriteProductFragment"
+        android:name="dev.haqim.productdummy.ui.favorites.FavoritesFragment"
+        android:label="fragment_favorite_product"
+        tools:layout="@layout/fragment_product_list" >
+        <action
+            android:id="@+id/action_favoriteProductFragment_to_detailProductFragment"
+            app:destination="@id/detailProductFragment"/>
+    </fragment>
+</navigation>

@@ -1,0 +1,16 @@
+dependencies {
+    implementation 'androidx.core:core-ktx:1.9.0'
+    
+    //hilt
+    implementation "com.google.dagger:hilt-android:2.45"
+    kapt "com.google.dagger:hilt-android-compiler:2.45"
+
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
+    testImplementation "androidx.arch.core:core-testing:2.2.0" // InstantTaskExecutorRule
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:5.1.1'
+    testImplementation 'org.mockito:mockito-inline:5.1.1'
+    testImplementation 'app.cash.turbine:turbine:0.12.1'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+
+}
