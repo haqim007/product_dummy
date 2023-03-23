@@ -38,4 +38,13 @@ class LocalDataSource (private val database: ProductDatabase){
         }
     }
     
+    companion object{
+        private var INSTANCE: LocalDataSource? = null
+
+        fun getInstance(database: ProductDatabase) = INSTANCE
+            ?: synchronized(this){
+            INSTANCE
+                ?: LocalDataSource(database)
+        }
+    }
 }

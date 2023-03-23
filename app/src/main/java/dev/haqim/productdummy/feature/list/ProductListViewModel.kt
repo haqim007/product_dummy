@@ -1,5 +1,6 @@
 package dev.haqim.productdummy.feature.list
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProductListViewModel (private val useCase: ProductUseCase): ViewModel() {
+class ProductListViewModel @ViewModelInject constructor (private val useCase: ProductUseCase): ViewModel() {
     private val _uiState = MutableStateFlow(ProductListUiState())
     val uiState = _uiState.stateIn(
         viewModelScope, SharingStarted.Eagerly, ProductListUiState()

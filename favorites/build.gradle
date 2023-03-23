@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.dynamic-feature'
     id 'org.jetbrains.kotlin.android'
+    id "dagger.hilt.android.plugin"
     id 'androidx.navigation.safeargs.kotlin'
     id "kotlin-kapt"
 }
@@ -26,6 +27,10 @@ android {
 
 kapt {
     correctErrorTypes true
+}
+
+hilt {
+    enableAggregatingTask = true
 }
 
 dependencies {

@@ -1,5 +1,6 @@
 package dev.haqim.productdummy.feature.detail
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.haqim.productdummy.core.data.mechanism.Resource
@@ -9,7 +10,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class DetailProductViewModel (private val useCase: ProductUseCase): ViewModel() {
+class DetailProductViewModel @ViewModelInject constructor (private val useCase: ProductUseCase): ViewModel() {
     private val _uiState = MutableStateFlow(DetailProductUiState())
     val uiState = _uiState.stateIn(
         viewModelScope, SharingStarted.Eagerly, DetailProductUiState()

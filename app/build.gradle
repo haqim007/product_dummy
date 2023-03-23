@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-kapt'
 }
 
@@ -54,6 +55,10 @@ android {
 
 kapt {
     correctErrorTypes true
+}
+
+hilt {
+    enableAggregatingTask true
 }
 
 dependencies {

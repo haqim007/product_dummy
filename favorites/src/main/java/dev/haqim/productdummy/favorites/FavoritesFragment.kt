@@ -6,33 +6,49 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import dagger.hilt.android.EntryPointAccessors
 import dev.haqim.productdummy.R
 import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.databinding.FragmentProductListBinding
-import dev.haqim.productdummy.di.useCaseModule
+import dev.haqim.productdummy.di.FavoriteModuleDependencies
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
-import org.koin.core.context.loadKoinModules
+import javax.inject.Inject
 
 class FavoritesFragment : Fragment() {
 
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
-    
-    private val viewModel: FavoritesViewModel = FavoritesViewModel(get())
+
+    @Inject
+    lateinit var factory: FavoritesViewModelFactory
+
+    private val viewModel: FavoritesViewModel by viewModels {
+        factory
+    }
     
     private lateinit var uiAction: (FavoritesUiAction) -> Boolean
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerFavoriteComponent.builder()
+            .context(this)
+            .appDependencies(
+                EntryPointAccessors.fromApplication(
+                    requireActivity().applicationContext,
+                    FavoriteModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
-        loadKoinModules(useCaseModule)
     }
     
     override fun onCreateView(

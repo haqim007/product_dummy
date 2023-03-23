@@ -1,18 +1,19 @@
 package dev.haqim.productdummy.di
 
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import dev.haqim.productdummy.core.domain.usecase.ProductInteractor
 import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
-import dev.haqim.productdummy.feature.detail.DetailProductViewModel
-import dev.haqim.productdummy.feature.list.ProductListViewModel
-import org.koin.android.viewmodel.dsl.viewModel
-import org.koin.dsl.module
 
 
-val useCaseModule = module {
-    factory <ProductUseCase> { ProductInteractor(get()) }
-}
+@Module
+@InstallIn(ApplicationComponent::class)
+abstract class AppModule {
 
-val viewModelModule = module {
-    viewModel { ProductListViewModel(get()) }
-    viewModel { DetailProductViewModel(get()) }
+    @Binds
+    abstract fun provideProductUseCase(
+        productInteractor: ProductInteractor
+    ): ProductUseCase
 }
