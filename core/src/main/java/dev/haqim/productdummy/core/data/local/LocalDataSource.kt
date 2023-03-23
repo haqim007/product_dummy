@@ -6,13 +6,13 @@ import dev.haqim.productdummy.core.data.local.entity.ProductFavoriteEntity
 import dev.haqim.productdummy.core.data.local.entity.RemoteKeys
 import dev.haqim.productdummy.core.data.local.room.ProductDatabase
 
-class LocalDataSource private constructor(private val database: dev.haqim.productdummy.core.data.local.room.ProductDatabase){
+class LocalDataSource (private val database: ProductDatabase){
 
     private val remoteKeysDao = database.remoteKeysDao()
     private val productDao = database.productDao()
 
     suspend fun clearRemoteKeys() = remoteKeysDao.clearRemoteKeys()
-    suspend fun insertRemoteKeys(keys: List<dev.haqim.productdummy.core.data.local.entity.RemoteKeys>) = remoteKeysDao.insertAll(keys)
+    suspend fun insertRemoteKeys(keys: List<RemoteKeys>) = remoteKeysDao.insertAll(keys)
     suspend fun getRemoteKeysById(id: String) = remoteKeysDao.getRemoteKeyById(id)
 
     fun getAllProducts() = productDao.getAllProducts()
@@ -24,7 +24,7 @@ class LocalDataSource private constructor(private val database: dev.haqim.produc
     suspend fun removeFavoriteProduct(productId: Int) = productDao.removeFavoriteProduct(productId)
 
     suspend fun insertKeysAndProducts(
-        keys: List<dev.haqim.productdummy.core.data.local.entity.RemoteKeys>,
+        keys: List<RemoteKeys>,
         stories: List<dev.haqim.productdummy.core.data.local.entity.ProductEntity>,
         isRefresh: Boolean = false
     ){
@@ -38,13 +38,4 @@ class LocalDataSource private constructor(private val database: dev.haqim.produc
         }
     }
     
-    companion object{
-        private var INSTANCE: dev.haqim.productdummy.core.data.local.LocalDataSource? = null
-
-        fun getInstance(database: dev.haqim.productdummy.core.data.local.room.ProductDatabase) = dev.haqim.productdummy.core.data.local.LocalDataSource.Companion.INSTANCE
-            ?: synchronized(this){
-            dev.haqim.productdummy.core.data.local.LocalDataSource.Companion.INSTANCE
-                ?: dev.haqim.productdummy.core.data.local.LocalDataSource(database)
-        }
-    }
 }

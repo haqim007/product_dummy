@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "Product Dummy"
 include ':app'
 include ':core'
+include ':favorites'

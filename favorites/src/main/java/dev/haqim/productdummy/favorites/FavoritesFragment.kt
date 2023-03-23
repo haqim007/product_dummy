@@ -1,32 +1,39 @@
-package dev.haqim.productdummy.feature.favorites
+package dev.haqim.productdummy.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import dagger.hilt.android.AndroidEntryPoint
 import dev.haqim.productdummy.R
-import dev.haqim.productdummy.databinding.FragmentProductListBinding
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
+import dev.haqim.productdummy.databinding.FragmentProductListBinding
+import dev.haqim.productdummy.di.useCaseModule
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
+import org.koin.core.context.loadKoinModules
 
-
-@AndroidEntryPoint
 class FavoritesFragment : Fragment() {
 
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FavoritesViewModel by viewModels()
-
+    
+    private val viewModel: FavoritesViewModel = FavoritesViewModel(get())
+    
     private lateinit var uiAction: (FavoritesUiAction) -> Boolean
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loadKoinModules(useCaseModule)
+    }
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,13 +48,13 @@ class FavoritesFragment : Fragment() {
         
         bindState(uiState, uiAction)
 
-        //bind product list
-        bindFavorites(uiAction)
+//        bind product list
+        bindFavorites(uiState, uiAction)
 
         return binding.root
     }
 
-    private fun bindFavorites(uiAction: (FavoritesUiAction) -> Boolean) {
+    private fun bindFavorites(uiState: StateFlow<FavoritesUiState>, uiAction: (FavoritesUiAction) -> Boolean) {
         val adapter = FavoritesAdapter(object : FavoritesAdapterListener {
             override fun onClickProduct( product: Product) {
                 uiAction(FavoritesUiAction.OpenProduct(product))
@@ -62,6 +69,24 @@ class FavoritesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.pagingDataFlow.collect(adapter::submitData)
         }
+
+        val addToFavoriteResult = uiState.map { it.addToFavoriteResult }.distinctUntilChanged()
+        viewLifecycleOwner.lifecycleScope.launch {
+            addToFavoriteResult.collect{
+                when (it) {
+                    is Resource.Success -> {
+                        Toast.makeText(this@FavoritesFragment.context, R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(this@FavoritesFragment.context, R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> {
+                        Toast.makeText(this@FavoritesFragment.context, R.string.please_wait, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     private fun bindState(
@@ -74,10 +99,9 @@ class FavoritesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch { 
             openProductFlow.collect{product ->
                 product?.let{
-                    val action =
-                        FavoritesFragmentDirections
-                            .actionFavoriteProductFragmentToDetailProductFragment(it)
-                    findNavController().navigate(action)
+                    val bundle =  Bundle()
+                    bundle.putParcelable("product", it)
+                    findNavController().navigate(R.id.detailProductFragment, bundle)
                     uiAction(FavoritesUiAction.AfterOpenProduct)
                 }
             }

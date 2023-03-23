@@ -1,14 +1,9 @@
 package dev.haqim.productdummy.core.di
 
-import android.content.Context
 import androidx.room.Room
-import dagger.Binds
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import dev.haqim.productdummy.core.BuildConfig
+import dev.haqim.productdummy.core.data.local.LocalDataSource
+import dev.haqim.productdummy.core.data.local.room.ProductDatabase
 import dev.haqim.productdummy.core.data.remote.RemoteDataSource
 import dev.haqim.productdummy.core.data.remote.mediator.ProductRemoteMediator
 import dev.haqim.productdummy.core.data.remote.network.ApiService
@@ -16,119 +11,44 @@ import dev.haqim.productdummy.core.data.repository.ProductRepository
 import dev.haqim.productdummy.core.domain.repository.IProductRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun provideProductRepository(
-        productRepository: ProductRepository
-    ): IProductRepository
-    
-}
+val databaseModule = module {
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DataModule {
-
-    @Provides
-    @Singleton
-    fun provideProductRemoteMediator(
-        localDataSource: dev.haqim.productdummy.core.data.local.LocalDataSource,
-        remoteDataSource: RemoteDataSource
-    ): ProductRemoteMediator {
-        return ProductRemoteMediator(localDataSource, remoteDataSource)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLocalDataSource(
-        database: dev.haqim.productdummy.core.data.local.room.ProductDatabase
-    ): dev.haqim.productdummy.core.data.local.LocalDataSource {
-        return dev.haqim.productdummy.core.data.local.LocalDataSource.getInstance(database)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRemoteDataSource(
-        service: ApiService
-    ): RemoteDataSource {
-        return RemoteDataSource(service)
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            ProductDatabase::class.java, "product_dummy.db"
+        ).fallbackToDestructiveMigration().build()
     }
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-
-    @Provides
-    @Singleton
-    fun provideDatabase(@ApplicationContext context: Context) =
-        Room
-            .databaseBuilder(context, dev.haqim.productdummy.core.data.local.room.ProductDatabase::class.java, "product_dummy.db")
-            .fallbackToDestructiveMigration().build()
-    
-    
-}
-
-
-@Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule{
-
-    private var baseUrl: String = BuildConfig.BASE_URL
-    fun setBaseUrl(url: String) {
-        baseUrl = url
-    }
-    
-    @Provides
-    @Singleton
-    fun provideOkHttp() = 
+val networkModule = module {
+    single {
         OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(120, TimeUnit.SECONDS)
-
-    @Provides
-    @Singleton
-    fun providerRetrofit(
-        okHttpClient: OkHttpClient.Builder
-    ): Retrofit {
-        val loggingInterceptor =
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        val client = if(BuildConfig.DEBUG){
-            okHttpClient
-                .addInterceptor(loggingInterceptor)
-                .connectTimeout(120, TimeUnit.SECONDS)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .build()
-        }else{
-            okHttpClient
-                .connectTimeout(120, TimeUnit.SECONDS)
-                .readTimeout(120, TimeUnit.SECONDS)
-                .build()
-        }
-
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
             .build()
     }
-
-    @Provides
-    @Singleton
-    fun provideApiService(
-        retrofit: Retrofit
-    ): ApiService {
-        return retrofit.create(ApiService::class.java)
+    single {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(get())
+            .build()
+        retrofit.create(ApiService::class.java)
     }
+}
 
-
+val repositoryModule = module {
+    single { LocalDataSource(get()) }
+    single { RemoteDataSource(get()) }
+    factory { ProductRemoteMediator(get(), get()) }
+    single<IProductRepository> { ProductRepository(get(), get()) }
 }

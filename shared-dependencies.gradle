@@ -1,16 +1,17 @@
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.core:core-ktx:$core_version"
     
     //hilt
-    implementation "com.google.dagger:hilt-android:2.45"
-    kapt "com.google.dagger:hilt-android-compiler:2.45"
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android-viewmodel:$koin_version"
 
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
-    testImplementation "androidx.arch.core:core-testing:2.2.0" // InstantTaskExecutorRule
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.1.1'
-    testImplementation 'org.mockito:mockito-inline:5.1.1'
-    testImplementation 'app.cash.turbine:turbine:0.12.1'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
+    testImplementation "androidx.arch.core:core-testing:$core_testing_version" // InstantTaskExecutorRule
+    testImplementation "junit:junit:$junit_junit_version"
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "app.cash.turbine:turbine:$turbine_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
 
 }

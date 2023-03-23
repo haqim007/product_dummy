@@ -5,32 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
-import dagger.hilt.android.AndroidEntryPoint
 import dev.haqim.productdummy.R
-import dev.haqim.productdummy.databinding.FragmentDetailProductBinding
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
+import dev.haqim.productdummy.databinding.FragmentDetailProductBinding
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class DetailProductFragment : Fragment() {
 
     private var _binding: FragmentDetailProductBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DetailProductViewModel by viewModels()
+    private val viewModel: DetailProductViewModel by inject()
     private lateinit var product: Product
 
     override fun onCreateView(
@@ -52,6 +49,24 @@ class DetailProductFragment : Fragment() {
 
         binding.btnFavorite.setOnClickListener {
             uiAction(DetailProductUiAction.ToggleFavorite(product))
+        }
+
+        val addToFavoriteResult = uiState.map { it.addToFavoriteResult }.distinctUntilChanged()
+        viewLifecycleOwner.lifecycleScope.launch {
+            addToFavoriteResult.collect{
+                when (it) {
+                    is Resource.Success -> {
+                        Toast.makeText(this@DetailProductFragment.context, R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Error -> {
+                        Toast.makeText(this@DetailProductFragment.context, R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> {
+                        Toast.makeText(this@DetailProductFragment.context, R.string.please_wait, Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {}
+                }
+            }
         }
         
         return binding.root

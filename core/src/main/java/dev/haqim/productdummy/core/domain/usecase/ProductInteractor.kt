@@ -1,12 +1,12 @@
 package dev.haqim.productdummy.core.domain.usecase
 
 import androidx.paging.PagingData
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.core.domain.repository.IProductRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class ProductInteractor @Inject constructor(
+class ProductInteractor constructor(
     private val repository: IProductRepository
 ): ProductUseCase {
     override fun getProducts(): Flow<PagingData<Product>> {
@@ -17,12 +17,12 @@ class ProductInteractor @Inject constructor(
         return repository.getFavoriteProducts()
     }
 
-    override suspend fun toggleFavorite(product: Product) {
-        repository.toggleFavorite(product)
+    override suspend fun toggleFavorite(product: Product): Flow<Resource<Boolean>> {
+        return repository.toggleFavorite(product)
     }
 
-    override suspend fun removeFavorite(product: Product) {
-        repository.removeFavorite(product)
+    override suspend fun removeFavorite(product: Product): Flow<Resource<Boolean>> {
+        return repository.removeFavorite(product)
     }
 
     override fun getProduct(product: Product): Flow<Product?> {

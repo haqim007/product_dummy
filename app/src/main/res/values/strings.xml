@@ -6,4 +6,8 @@
     <string name="product_image">product image</string>
     <string name="favorite_products_title">Favorite Products</string>
     <string name="description">Description</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="please_wait">Please wait ...</string>
+    <string name="failed_to_update_favorite">Gagal untuk memperbarui favorite</string>
+    <string name="success_to_update_favorite">Berhasil memperbarui favorite</string>
 </resources>

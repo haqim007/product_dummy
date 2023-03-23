@@ -1,55 +1,27 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.dynamic-feature'
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs.kotlin'
-    id 'kotlin-parcelize'
-    id 'kotlin-kapt'
+    id "kotlin-kapt"
 }
 
 apply from: "../shared-dependencies.gradle"
 
 android {
-    namespace 'dev.haqim.productdummy'
+    namespace 'dev.haqim.productdummy.favorites'
     compileSdk 33
 
     defaultConfig {
-        applicationId "dev.haqim.productdummy"
         minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        debug {
-            minifyEnabled false
-            buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
-    buildFeatures {
-        buildConfig true
-        viewBinding true
-    }
-    testOptions {
-        animationsDisabled = true
-    }
-    dynamicFeatures = [':favorites']
 }
 
 kapt {
@@ -57,7 +29,7 @@ kapt {
 }
 
 dependencies {
-    
+    implementation project(":app")
     implementation project(":core")
 
     implementation "androidx.appcompat:appcompat:$appcompat_version"

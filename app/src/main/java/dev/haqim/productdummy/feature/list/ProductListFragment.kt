@@ -2,31 +2,31 @@ package dev.haqim.productdummy.feature.list
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import dagger.hilt.android.AndroidEntryPoint
 import dev.haqim.productdummy.R
-import dev.haqim.productdummy.databinding.FragmentProductListBinding
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
+import dev.haqim.productdummy.databinding.FragmentProductListBinding
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
-@AndroidEntryPoint
 class ProductListFragment : Fragment() {
 
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: ProductListViewModel by viewModels()
+    private val viewModel: ProductListViewModel by inject()
     private lateinit var uiAction: (ProductListUiAction) -> Boolean
     
     override fun onCreateView(
@@ -41,7 +41,7 @@ class ProductListFragment : Fragment() {
         bindState(uiState, uiAction)
 
         //bind product list
-        bindProductList(uiAction)
+        bindProductList(uiState, uiAction)
 
         return binding.root
     }
@@ -56,7 +56,7 @@ class ProductListFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when(menuItem.itemId){
-                    R.id.menu_to_favorite -> {
+                    R.id.favoritesGraph -> {
                         uiAction(ProductListUiAction.NavigateToFavorite)
                         true
                     }
@@ -70,7 +70,7 @@ class ProductListFragment : Fragment() {
     
     
 
-    private fun bindProductList(uiAction: (ProductListUiAction) -> Boolean) {
+    private fun bindProductList(uiState: StateFlow<ProductListUiState>, uiAction: (ProductListUiAction) -> Boolean) {
         val adapter = ProductListAdapter(object : ProductListAdapterListener {
             override fun onClickProduct( product: Product) {
                 uiAction(ProductListUiAction.OpenProduct(product))
@@ -84,6 +84,24 @@ class ProductListFragment : Fragment() {
         binding.rvProducts.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         lifecycleScope.launch {
             viewModel.pagingDataFlow.collect(adapter::submitData)
+        }
+        
+        val addToFavoriteResult = uiState.map { it.addToFavoriteResult }.distinctUntilChanged()
+        viewLifecycleOwner.lifecycleScope.launch {
+            addToFavoriteResult.collect{
+                 when (it) {
+                     is Resource.Success -> {
+                         Toast.makeText(this@ProductListFragment.context, R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
+                     }
+                     is Resource.Error -> {
+                         Toast.makeText(this@ProductListFragment.context, R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
+                     }
+                     is Resource.Loading -> {
+                         Toast.makeText(this@ProductListFragment.context, R.string.please_wait, Toast.LENGTH_SHORT).show()
+                     }
+                     else -> {}
+                 }
+            }
         }
     }
 
@@ -108,7 +126,7 @@ class ProductListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             favoriteProductsFlow.collect {
                 if (it) {
-                    findNavController().navigate(R.id.action_productListFragment_to_favoriteProductFragment)
+                    findNavController().navigate(R.id.favoritesGraph)
                     uiAction(ProductListUiAction.NavigateToFavorite)
                 }
             }

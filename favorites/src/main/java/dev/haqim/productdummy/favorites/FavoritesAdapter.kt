@@ -1,4 +1,4 @@
-package dev.haqim.productdummy.feature.favorites
+package dev.haqim.productdummy.favorites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dev.haqim.productdummy.R
 import dev.haqim.productdummy.databinding.ItemProductBinding
 import dev.haqim.productdummy.core.domain.model.Product
-import java.text.NumberFormat
 import java.util.*
 
 

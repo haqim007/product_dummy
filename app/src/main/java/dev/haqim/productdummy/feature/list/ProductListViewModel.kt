@@ -4,17 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
-class ProductListViewModel @Inject constructor(private val useCase: ProductUseCase): ViewModel() {
+class ProductListViewModel (private val useCase: ProductUseCase): ViewModel() {
     private val _uiState = MutableStateFlow(ProductListUiState())
     val uiState = _uiState.stateIn(
         viewModelScope, SharingStarted.Eagerly, ProductListUiState()
@@ -48,7 +47,15 @@ class ProductListViewModel @Inject constructor(private val useCase: ProductUseCa
     private fun MutableSharedFlow<ProductListUiAction>.updateStates() = onEach {
         when(it){ 
             is ProductListUiAction.ToggleFavorite -> {
-                useCase.toggleFavorite(it.product)
+                viewModelScope.launch {
+                    useCase.toggleFavorite(it.product).collect{
+                        _uiState.update { state -> 
+                            state.copy(
+                                addToFavoriteResult = it
+                            )
+                        }
+                    }
+                }
             }
             is ProductListUiAction.OpenProduct -> {
                 _uiState.update { state -> 
@@ -81,7 +88,8 @@ class ProductListViewModel @Inject constructor(private val useCase: ProductUseCa
 
 data class ProductListUiState(
     val productToOpen: Product? = null,
-    val navigateToFavorite: Boolean = false
+    val navigateToFavorite: Boolean = false,
+    val addToFavoriteResult: Resource<Boolean> = Resource.Idle()
 )
 
 sealed class ProductListUiAction{

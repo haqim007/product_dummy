@@ -1,18 +1,15 @@
 package dev.haqim.productdummy.feature.detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class DetailProductViewModel @Inject constructor(private val useCase: ProductUseCase): ViewModel() {
+class DetailProductViewModel (private val useCase: ProductUseCase): ViewModel() {
     private val _uiState = MutableStateFlow(DetailProductUiState())
     val uiState = _uiState.stateIn(
         viewModelScope, SharingStarted.Eagerly, DetailProductUiState()
@@ -31,7 +28,15 @@ class DetailProductViewModel @Inject constructor(private val useCase: ProductUse
     private fun MutableSharedFlow<DetailProductUiAction>.updateStates() = onEach {
         when(it){
             is DetailProductUiAction.ToggleFavorite -> {
-                useCase.toggleFavorite(it.product)
+                viewModelScope.launch {
+                    useCase.toggleFavorite(it.product).collect{
+                        _uiState.update { state ->
+                            state.copy(
+                                addToFavoriteResult = it
+                            )
+                        }
+                    }
+                }
             }
             is DetailProductUiAction.GetProduct -> {
                 viewModelScope.launch {
@@ -55,6 +60,7 @@ class DetailProductViewModel @Inject constructor(private val useCase: ProductUse
 
 data class DetailProductUiState(
     val product: Product? = null,
+    val addToFavoriteResult: Resource<Boolean> = Resource.Idle()
 )
 
 sealed class DetailProductUiAction{

@@ -1,21 +1,21 @@
-package dev.haqim.productdummy.feature.favorites
+package dev.haqim.productdummy.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.core.domain.usecase.ProductUseCase
-import dev.haqim.productdummy.feature.list.ProductListUiAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
-class FavoritesViewModel @Inject constructor(private val useCase: ProductUseCase): ViewModel() {
+class FavoritesViewModel constructor(
+    val useCase: ProductUseCase
+    ): ViewModel() {
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState = _uiState.stateIn(
         viewModelScope, SharingStarted.Eagerly, FavoritesUiState()
@@ -49,7 +49,15 @@ class FavoritesViewModel @Inject constructor(private val useCase: ProductUseCase
     private fun MutableSharedFlow<FavoritesUiAction>.updateStates() = onEach {
         when(it){ 
             is FavoritesUiAction.RemoveFavorite -> {
-                useCase.toggleFavorite(it.product)
+                viewModelScope.launch {
+                    useCase.removeFavorite(it.product).collect{
+                        _uiState.update { state ->
+                            state.copy(
+                                addToFavoriteResult = it
+                            )
+                        }
+                    }
+                }
             }
             is FavoritesUiAction.OpenProduct -> {
                 _uiState.update { state -> 
@@ -75,6 +83,7 @@ class FavoritesViewModel @Inject constructor(private val useCase: ProductUseCase
 
 data class FavoritesUiState(
     val productToOpen: Product? = null,
+    val addToFavoriteResult: Resource<Boolean> = Resource.Idle()
 )
 
 sealed class FavoritesUiAction{
