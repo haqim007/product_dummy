@@ -13,13 +13,11 @@ import dev.haqim.productdummy.R
 import dev.haqim.productdummy.core.data.mechanism.Resource
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.databinding.FragmentProductListBinding
-import dev.haqim.productdummy.di.useCaseModule
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
-import org.koin.core.context.loadKoinModules
 
 class FavoritesFragment : Fragment() {
 
@@ -32,7 +30,7 @@ class FavoritesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadKoinModules(useCaseModule)
+//        loadKoinModules(useCaseModule)
     }
     
     override fun onCreateView(
