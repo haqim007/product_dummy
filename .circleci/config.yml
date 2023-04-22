@@ -26,17 +26,12 @@ jobs:
       - checkout
       
       - run:
-          name: Add AdoptOpenJDK 18 repository
+          name: Install OpenJDK 18
           command: |
-            sudo add-apt-repository ppa:linuxuprising/java
-            sudo apt-get update
-
-      - run:
-          name: Install AdoptOpenJDK 18
-          command: |
-            echo oracle-java18-installer shared/accepted-oracle-license-v1-2 select true | sudo /usr/bin/debconf-set-selections
-            sudo apt-get install -y oracle-java18-installer
-
+            sudo apt-get update && sudo apt-get install openjdk-18-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-18-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-18-openjdk-amd64/bin/javac
+            java -version
 
       # Restore cached dependencies
       - restore_cache:
