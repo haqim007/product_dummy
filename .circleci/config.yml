@@ -25,9 +25,31 @@ jobs:
       # Checkout the code as the first step.
       - checkout
 
+      # Restore cached dependencies
+      - restore_cache:
+          key: android-orb-v1-
+
+      # Get access to use gradle
       - run:
-          name: Setup Permission
+          name: Chmods permission
           command: sudo chmod +x ./gradlew
+          
+      # Create file local.properties
+      - run:
+          name: Create local.properties
+          command: touch local.properties
+      
+      # Download dependencies
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+          
+      # Cache downloaded dependencies
+      - save_cache:
+          paths:
+            - ~/.android/build-cache
+            - ~/.android/cache
+          key: "android-orb-v1-{{ epoch }}"
 
       # The next step will run the unit tests
       - android/run-tests:
