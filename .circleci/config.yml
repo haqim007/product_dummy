@@ -18,9 +18,6 @@ jobs:
     # See: https://circleci.com/docs/2.0/executor-types/
     executor:
       name: android/android-machine
-      
-    environment:
-      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
@@ -36,6 +33,13 @@ jobs:
             sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
             java -version
             
+      - run:
+          name: Set JAVA_HOME
+          command: |
+            export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+            echo "JAVA_HOME=$JAVA_HOME"
+      
+      
       # Restore cached dependencies
       - restore_cache:
           key: android-orb-v1-
