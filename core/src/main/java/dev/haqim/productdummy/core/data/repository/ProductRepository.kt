@@ -1,10 +1,11 @@
 package dev.haqim.productdummy.core.data.repository
 
 import androidx.paging.*
+import dev.haqim.productdummy.core.data.local.LocalDataSource
 import dev.haqim.productdummy.core.data.mapper.toModel
 import dev.haqim.productdummy.core.data.mapper.toProductFavoriteEntity
 import dev.haqim.productdummy.core.data.mechanism.Resource
-import dev.haqim.productdummy.core.data.remote.mediator.ProductRemoteMediator
+import dev.haqim.productdummy.core.data.remotemediator.ProductRemoteMediator
 import dev.haqim.productdummy.core.domain.model.Product
 import dev.haqim.productdummy.core.domain.repository.IProductRepository
 import kotlinx.coroutines.flow.*
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.*
 @OptIn(ExperimentalPagingApi::class)
 class ProductRepository constructor(
     private val remoteMediator: ProductRemoteMediator,
-    private val localDataSource: dev.haqim.productdummy.core.data.local.LocalDataSource
+    private val localDataSource: LocalDataSource
 ): IProductRepository {
     
     override fun getProducts(): Flow<PagingData<Product>> {
@@ -58,7 +59,7 @@ class ProductRepository constructor(
                 }
                 emit(Resource.Success(true))
             }catch (e: Exception){
-                emit(Resource.Error(e.localizedMessage, false))
+                emit(Resource.Error(e.localizedMessage ?: "", false))
             }
         }.onCompletion {
             emit(Resource.Idle())
@@ -72,7 +73,7 @@ class ProductRepository constructor(
                 localDataSource.removeFavoriteProduct(product.id)
                 emit(Resource.Success(true))
             }catch (e: Exception){
-                emit(Resource.Error(e.localizedMessage, false))
+                emit(Resource.Error(e.localizedMessage ?: "", false))
             }
         }.onCompletion {
             emit(Resource.Idle())

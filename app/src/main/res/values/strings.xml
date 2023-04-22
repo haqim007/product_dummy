@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">Product Dummy</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_favorite">Menu Favorite</string>
     <string name="product_image">product image</string>
     <string name="favorite_products_title">Favorite Products</string>
     <string name="description">Description</string>
     <string name="title_favorites">Favorites</string>
-    <string name="please_wait">Please wait ...</string>
+    <string name="please_wait">Please wait …</string>
     <string name="failed_to_update_favorite">Gagal untuk memperbarui favorite</string>
     <string name="success_to_update_favorite">Berhasil memperbarui favorite</string>
+    <string name="button_to_add_product_to_favorite">Button to add product to favorite</string>
+    <string name="author">Author: Muhamad Nurul Khaqim</string>
+    <string name="data_source">Data source: https://dummyjson.com</string>
+    <string name="menu_about">Menu About</string>
+    <string name="about">About the app</string>
 </resources>

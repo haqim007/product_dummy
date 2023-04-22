@@ -3,10 +3,10 @@ package dev.haqim.productdummy.core.data.mapper
 import dev.haqim.productdummy.core.data.local.entity.ProductWithFavoriteEntity
 import dev.haqim.productdummy.core.domain.model.Product
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 
-fun dev.haqim.productdummy.core.data.local.entity.ProductWithFavoriteEntity.toModel() =
+fun ProductWithFavoriteEntity.toModel() =
     Product(
         discountPercentage = this.product.discountPercentage,
         thumbnail = this.product.thumbnail,

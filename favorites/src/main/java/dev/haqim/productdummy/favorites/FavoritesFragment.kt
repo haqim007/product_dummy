@@ -26,12 +26,6 @@ class FavoritesFragment : Fragment() {
     
     private val viewModel: FavoritesViewModel = FavoritesViewModel(get())
     
-    private lateinit var uiAction: (FavoritesUiAction) -> Boolean
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        loadKoinModules(useCaseModule)
-    }
     
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +36,7 @@ class FavoritesFragment : Fragment() {
         requireActivity().setTitle(R.string.favorite_products_title)
         
         val uiState = viewModel.uiState
-        uiAction = {action: FavoritesUiAction -> viewModel.processAction(action)}
+        val uiAction = {action: FavoritesUiAction -> viewModel.processAction(action)}
         
         bindState(uiState, uiAction)
 
@@ -73,13 +67,13 @@ class FavoritesFragment : Fragment() {
             addToFavoriteResult.collect{
                 when (it) {
                     is Resource.Success -> {
-                        Toast.makeText(this@FavoritesFragment.context, R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
                     }
                     is Resource.Error -> {
-                        Toast.makeText(this@FavoritesFragment.context, R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
                     }
                     is Resource.Loading -> {
-                        Toast.makeText(this@FavoritesFragment.context, R.string.please_wait, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.please_wait, Toast.LENGTH_SHORT).show()
                     }
                     else -> {}
                 }

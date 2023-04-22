@@ -19,13 +19,13 @@ class LocalDataSource (private val database: ProductDatabase){
     fun getAllFavoriteProducts() = productDao.getAllFavoriteProducts()
     fun getProductById(id: Int) = productDao.getProductById(id)
     suspend fun clearAllProducts() = productDao.clearAllProducts()
-    suspend fun insertAllProducts(products: List<dev.haqim.productdummy.core.data.local.entity.ProductEntity>) = productDao.insertProducts(products)
-    suspend fun insertFavoriteProduct(product: dev.haqim.productdummy.core.data.local.entity.ProductFavoriteEntity) = productDao.insertFavoriteProduct(product)
+    suspend fun insertAllProducts(products: List<ProductEntity>) = productDao.insertProducts(products)
+    suspend fun insertFavoriteProduct(product: ProductFavoriteEntity) = productDao.insertFavoriteProduct(product)
     suspend fun removeFavoriteProduct(productId: Int) = productDao.removeFavoriteProduct(productId)
 
     suspend fun insertKeysAndProducts(
         keys: List<RemoteKeys>,
-        stories: List<dev.haqim.productdummy.core.data.local.entity.ProductEntity>,
+        stories: List<ProductEntity>,
         isRefresh: Boolean = false
     ){
         database.withTransaction {

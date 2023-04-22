@@ -91,8 +91,8 @@ class DetailProductFragment : Fragment() {
                     
                     // set image list
                     val imageList = ArrayList<SlideModel>()
-                    product.images.forEach {
-                        imageList.add(SlideModel(imageUrl = it))
+                    product.images.forEach {url ->
+                        imageList.add(SlideModel(imageUrl = url))
                     }
                     binding.productImages.setImageList(imageList, scaleType = ScaleTypes.FIT)
 

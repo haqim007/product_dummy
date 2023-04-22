@@ -21,31 +21,37 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
 
         debug {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
     
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_18
+        targetCompatibility JavaVersion.VERSION_18
     }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '18'
     }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+    
 }
 
 
 dependencies {
 
-    implementation("com.google.code.gson:gson:$gson_version")
+    api("com.google.code.gson:gson:$gson_version")
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -57,7 +63,12 @@ dependencies {
 
     // room
     implementation "androidx.room:room-ktx:$room_version"
+    implementation 'androidx.test:core-ktx:1.5.0'
+
     kapt "androidx.room:room-compiler:$room_version"
     api "androidx.paging:paging-runtime-ktx:$paging_runtime_version"
     implementation "androidx.room:room-paging:$room_version"
+
+    implementation "net.zetetic:android-database-sqlcipher:$sqlchiper_version"
+    implementation "androidx.sqlite:sqlite-ktx:$sqlite_version"
 }

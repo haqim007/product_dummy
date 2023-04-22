@@ -24,24 +24,27 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            minifyEnabled false
+            minifyEnabled true
             buildConfigField "String", "BASE_URL", "\"https://dummyjson.com/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_18
+        targetCompatibility JavaVersion.VERSION_18
     }
+
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '18'
     }
+
     buildFeatures {
         buildConfig true
         viewBinding true
@@ -65,11 +68,12 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_viewmodel_version"
-    implementation "androidx.activity:activity-ktx:$appcompat_version"
+    implementation "androidx.activity:activity-ktx:$activity_version"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version"
     implementation "com.google.android.play:core:$play_core_version"
     implementation "com.github.denzcoskun:ImageSlideshow:$ImageSlideshow_version"
+    implementation "com.airbnb.android:lottie:$lottie_version"
 
 
     //navigation
@@ -95,4 +99,6 @@ dependencies {
     //mock web server
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
     androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$mockwebserver_version"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 }

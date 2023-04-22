@@ -16,11 +16,7 @@
             app:destination="@id/detailProductFragment"
             app:popUpTo="@id/detailProductFragment"
             app:popUpToInclusive="true"/>
-<!--        <action-->
-<!--            android:id="@+id/action_productListFragment_to_favoriteProductFragment"-->
-<!--            app:destination="@id/favoriteProductFragment"-->
-<!--            app:popUpTo="@id/favoriteProductFragment"-->
-<!--            app:popUpToInclusive="true"/>-->
+
         
     </fragment>
     
@@ -40,4 +36,10 @@
         android:id="@+id/favoritesGraph"
         app:moduleName="favorites"
         app:graphResName="favorite_navigation" />
+    
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="dev.haqim.productdummy.feature.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
 </navigation>

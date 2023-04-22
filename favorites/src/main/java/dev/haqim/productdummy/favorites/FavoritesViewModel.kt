@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FavoritesViewModel constructor(
-    val useCase: ProductUseCase
+    private val useCase: ProductUseCase
     ): ViewModel() {
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState = _uiState.stateIn(

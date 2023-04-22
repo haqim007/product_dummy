@@ -12,10 +12,11 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dev.haqim.productdummy.R
 import dev.haqim.productdummy.databinding.ItemProductBinding
 import dev.haqim.productdummy.core.domain.model.Product
+import dev.haqim.productdummy.core.ui.ProductsAdapter
 
 
 class ProductListAdapter(private val listener: ProductListAdapterListener):
-    PagingDataAdapter<Product, RecyclerView.ViewHolder>(DIFF_CALLBACK){
+    ProductsAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder.onCreate(parent)
@@ -61,19 +62,7 @@ class ProductListAdapter(private val listener: ProductListAdapterListener):
             }
         }
     }
-
-    companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Product>() {
-
-            override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
-                return oldItem == newItem
-            }
-        }
-    }
+    
 }
 
 interface ProductListAdapterListener{

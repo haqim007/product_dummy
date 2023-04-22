@@ -8,26 +8,26 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProducts(products: List<dev.haqim.productdummy.core.data.local.entity.ProductEntity>)
+    suspend fun insertProducts(products: List<ProductEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavoriteProduct(product: dev.haqim.productdummy.core.data.local.entity.ProductFavoriteEntity)
+    suspend fun insertFavoriteProduct(product: ProductFavoriteEntity)
 
-    @Query("DELETE FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS_FAVORITE} WHERE product_id = :productId")
+    @Query("DELETE FROM $TABLE_PRODUCTS_FAVORITE WHERE product_id = :productId")
     suspend fun removeFavoriteProduct(productId: Int)
     
     @Transaction
-    @Query("SELECT * FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS}")
-    fun getAllProducts(): PagingSource<Int, dev.haqim.productdummy.core.data.local.entity.ProductWithFavoriteEntity>
+    @Query("SELECT * FROM $TABLE_PRODUCTS")
+    fun getAllProducts(): PagingSource<Int, ProductWithFavoriteEntity>
 
     @Transaction
-    @Query("SELECT * FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS} WHERE id IN (SELECT product_id FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS_FAVORITE})")
-    fun getAllFavoriteProducts(): PagingSource<Int, dev.haqim.productdummy.core.data.local.entity.ProductWithFavoriteEntity>
+    @Query("SELECT * FROM $TABLE_PRODUCTS WHERE id IN (SELECT product_id FROM $TABLE_PRODUCTS_FAVORITE)")
+    fun getAllFavoriteProducts(): PagingSource<Int, ProductWithFavoriteEntity>
 
     @Transaction
-    @Query("SELECT * FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS} where id = :id")
-    fun getProductById(id: Int): Flow<dev.haqim.productdummy.core.data.local.entity.ProductWithFavoriteEntity?>
+    @Query("SELECT * FROM $TABLE_PRODUCTS where id = :id")
+    fun getProductById(id: Int): Flow<ProductWithFavoriteEntity?>
     
-    @Query("DELETE FROM ${dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS}")
+    @Query("DELETE FROM $TABLE_PRODUCTS")
     suspend fun clearAllProducts()
 }

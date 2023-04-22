@@ -10,13 +10,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import dev.haqim.productdummy.R
-import dev.haqim.productdummy.databinding.ItemProductBinding
 import dev.haqim.productdummy.core.domain.model.Product
-import java.util.*
+import dev.haqim.productdummy.core.ui.ProductsAdapter
+import dev.haqim.productdummy.databinding.ItemProductBinding
 
 
 class FavoritesAdapter(private val listener: FavoritesAdapterListener):
-    PagingDataAdapter<Product, RecyclerView.ViewHolder>(DIFF_CALLBACK){
+    ProductsAdapter() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ViewHolder.onCreate(parent)
@@ -59,19 +59,6 @@ class FavoritesAdapter(private val listener: FavoritesAdapterListener):
                 val itemView =
                     ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return ViewHolder(itemView)
-            }
-        }
-    }
-
-    companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Product>() {
-
-            override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
-                return oldItem == newItem
             }
         }
     }

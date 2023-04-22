@@ -1,13 +1,11 @@
 package dev.haqim.productdummy.core.data.local.entity
 
-import kotlinx.parcelize.Parcelize
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 const val TABLE_PRODUCTS = "products"
-@Entity(tableName = dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS)
+@Entity(tableName = TABLE_PRODUCTS)
 data class ProductEntity(
 	@ColumnInfo(name = "discount_percentage")
 	val discountPercentage: Double,

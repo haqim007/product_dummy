@@ -3,9 +3,9 @@ package dev.haqim.productdummy.core.data.local.entity
 import androidx.room.*
 
 const val TABLE_PRODUCTS_FAVORITE = "products_favorite"
-@Entity(tableName = dev.haqim.productdummy.core.data.local.entity.TABLE_PRODUCTS_FAVORITE, foreignKeys = [
+@Entity(tableName = TABLE_PRODUCTS_FAVORITE, foreignKeys = [
 	ForeignKey(
-		entity = dev.haqim.productdummy.core.data.local.entity.ProductEntity::class,
+		entity = ProductEntity::class,
 		parentColumns = ["id"],
 		childColumns = ["product_id"],
 		onDelete = ForeignKey.NO_ACTION

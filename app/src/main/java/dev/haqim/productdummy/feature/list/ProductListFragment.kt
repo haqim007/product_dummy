@@ -1,14 +1,17 @@
 package dev.haqim.productdummy.feature.list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import dev.haqim.productdummy.R
 import dev.haqim.productdummy.core.data.mechanism.Resource
@@ -60,6 +63,10 @@ class ProductListFragment : Fragment() {
                         uiAction(ProductListUiAction.NavigateToFavorite)
                         true
                     }
+                    R.id.aboutFragment -> {
+                        uiAction(ProductListUiAction.NavigateToAbout)
+                        true
+                    }
                     else -> false
                 }
             }
@@ -80,10 +87,30 @@ class ProductListFragment : Fragment() {
                 uiAction(ProductListUiAction.ToggleFavorite(product))
             }
         })
+        
         binding.rvProducts.adapter = adapter
         binding.rvProducts.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         lifecycleScope.launch {
             viewModel.pagingDataFlow.collect(adapter::submitData)
+        }
+        
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collect { loadState ->
+
+                val errorState = loadState.source.append as? LoadState.Error
+                    ?: loadState.source.prepend as? LoadState.Error
+                    ?: loadState.append as? LoadState.Error
+                    ?: loadState.prepend as? LoadState.Error
+                    ?: loadState.refresh as? LoadState.Error
+
+                errorState?.let {
+                    binding.tvErrorMsg.isVisible = true
+                    binding.tvErrorMsg.text = it.error.localizedMessage
+                    Log.e("product dummy", it.error.localizedMessage ?: "")
+                } ?: run{
+                    binding.tvErrorMsg.isVisible = false
+                }
+            }
         }
         
         val addToFavoriteResult = uiState.map { it.addToFavoriteResult }.distinctUntilChanged()
@@ -91,13 +118,13 @@ class ProductListFragment : Fragment() {
             addToFavoriteResult.collect{
                  when (it) {
                      is Resource.Success -> {
-                         Toast.makeText(this@ProductListFragment.context, R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
+                         Toast.makeText(requireContext(), R.string.success_to_update_favorite, Toast.LENGTH_SHORT).show()
                      }
                      is Resource.Error -> {
-                         Toast.makeText(this@ProductListFragment.context, R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
+                         Toast.makeText(requireContext(), R.string.failed_to_update_favorite, Toast.LENGTH_SHORT).show()
                      }
                      is Resource.Loading -> {
-                         Toast.makeText(this@ProductListFragment.context, R.string.please_wait, Toast.LENGTH_SHORT).show()
+                         Toast.makeText(requireContext(), R.string.please_wait, Toast.LENGTH_SHORT).show()
                      }
                      else -> {}
                  }
@@ -116,6 +143,9 @@ class ProductListFragment : Fragment() {
         //bind open favorite products
         bindNavToFavoriteProducts(uiState, uiAction)
 
+        //bind open about screen
+        bindNavToAbout(uiState, uiAction)
+
     }
 
     private fun bindNavToFavoriteProducts(
@@ -128,6 +158,21 @@ class ProductListFragment : Fragment() {
                 if (it) {
                     findNavController().navigate(R.id.favoritesGraph)
                     uiAction(ProductListUiAction.NavigateToFavorite)
+                }
+            }
+        }
+    }
+
+    private fun bindNavToAbout(
+        uiState: StateFlow<ProductListUiState>,
+        uiAction: (ProductListUiAction) -> Boolean,
+    ) {
+        val navigateToAboutFlow = uiState.map { it.navigateToAbout }.distinctUntilChanged()
+        viewLifecycleOwner.lifecycleScope.launch {
+            navigateToAboutFlow.collect {
+                if (it) {
+                    findNavController().navigate(R.id.aboutFragment)
+                    uiAction(ProductListUiAction.NavigateToAbout)
                 }
             }
         }

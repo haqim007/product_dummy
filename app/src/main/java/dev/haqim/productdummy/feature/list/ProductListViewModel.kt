@@ -77,6 +77,13 @@ class ProductListViewModel (private val useCase: ProductUseCase): ViewModel() {
                     )
                 }
             }
+            is ProductListUiAction.NavigateToAbout -> {
+                _uiState.update { state ->
+                    state.copy(
+                        navigateToAbout = !state.navigateToAbout
+                    )
+                }
+            }
         }
     }
     
@@ -89,7 +96,8 @@ class ProductListViewModel (private val useCase: ProductUseCase): ViewModel() {
 data class ProductListUiState(
     val productToOpen: Product? = null,
     val navigateToFavorite: Boolean = false,
-    val addToFavoriteResult: Resource<Boolean> = Resource.Idle()
+    val addToFavoriteResult: Resource<Boolean> = Resource.Idle(),
+    val navigateToAbout: Boolean = false
 )
 
 sealed class ProductListUiAction{
@@ -98,4 +106,5 @@ sealed class ProductListUiAction{
     data class OpenProduct(val product: Product): ProductListUiAction()
     object  AfterOpenProduct: ProductListUiAction()
     object NavigateToFavorite: ProductListUiAction()
+    object NavigateToAbout: ProductListUiAction()
 }
