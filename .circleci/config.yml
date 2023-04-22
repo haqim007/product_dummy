@@ -27,7 +27,7 @@ jobs:
 
       - run:
           name: Setup Permission
-          command: chmod +x ./gradlew
+          command: sudo chmod +x ./gradlew
 
       # The next step will run the unit tests
       - android/run-tests:
