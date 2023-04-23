@@ -125,7 +125,12 @@ class DetailProductFragment : Fragment() {
             }
         }
     }
-    
-    
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.productImages.stopSliding()
+        binding.productImages.setImageList(listOf())
+        _binding = null
+    }
 
 }

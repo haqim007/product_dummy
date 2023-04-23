@@ -97,6 +97,11 @@ class ProductListFragment : Fragment() {
         lifecycleScope.launch {
             adapter.loadStateFlow.collect { loadState ->
 
+                val isEmpty =
+                    loadState.refresh is LoadState.NotLoading &&
+                    adapter.itemCount == 0 &&
+                    loadState.prepend.endOfPaginationReached
+
                 val errorState = loadState.source.append as? LoadState.Error
                     ?: loadState.source.prepend as? LoadState.Error
                     ?: loadState.append as? LoadState.Error
@@ -104,9 +109,11 @@ class ProductListFragment : Fragment() {
                     ?: loadState.refresh as? LoadState.Error
 
                 errorState?.let {
-                    binding.tvErrorMsg.isVisible = true
-                    binding.tvErrorMsg.text = it.error.localizedMessage
-                    Log.e("product dummy", it.error.localizedMessage ?: "")
+                    if(isEmpty){
+                        binding.tvErrorMsg.isVisible = true
+                        binding.tvErrorMsg.text = it.error.localizedMessage
+                        Log.e("product dummy", it.error.localizedMessage ?: "")
+                    }
                 } ?: run{
                     binding.tvErrorMsg.isVisible = false
                 }
@@ -198,4 +205,9 @@ class ProductListFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.rvProducts.adapter = null
+        _binding = null
+    }
 }

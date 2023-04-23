@@ -100,5 +100,4 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mockwebserver_version"
     androidTestImplementation "com.squareup.okhttp3:okhttp-tls:$mockwebserver_version"
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
 }
