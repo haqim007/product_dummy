@@ -2,10 +2,13 @@ package dev.haqim.productdummy.core.data.local.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import dev.haqim.productdummy.core.data.local.entity.ProductEntity
+import dev.haqim.productdummy.core.data.local.entity.ProductFavoriteEntity
+import dev.haqim.productdummy.core.data.local.entity.RemoteKeys
 
 
 @Database(
-    entities = [dev.haqim.productdummy.core.data.local.entity.RemoteKeys::class, dev.haqim.productdummy.core.data.local.entity.ProductEntity::class, dev.haqim.productdummy.core.data.local.entity.ProductFavoriteEntity::class],
+    entities = [RemoteKeys::class, ProductEntity::class, ProductFavoriteEntity::class],
     version = 2,
     exportSchema = false
 )
